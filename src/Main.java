@@ -58,8 +58,6 @@ public class Main {
 			
 			if(done == true)
 			{
-				//Elements title = doc.select("title");
-				//System.out.println("URL: " + url+sequence +"   TITLE: "+title.text());
 				numberOfUrls--;
 				workingUrls.add(url+sequence);
 			}
@@ -110,10 +108,7 @@ public class Main {
 
 	    return randomNum;
 	}
-	
-	
-
-	}
+}
 
 
 
