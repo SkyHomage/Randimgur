@@ -15,6 +15,7 @@ import org.jsoup.select.Elements;
 
 public class Main {
 
+	static boolean censored = false;
 	
 	public static void main(String[] args){
 		System.out.println("Working...");
@@ -30,37 +31,28 @@ public class Main {
 	
 	public static ArrayList<String> CreateUrls(){
 		String test = "abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-		Document doc = null;
 		ArrayList<String> workingUrls = new ArrayList<String>();
 		String url = "http://i.imgur.com/";
 		String sequence = null;
-		boolean done = false;
 		int numberOfUrls = 30;
+		
 		while(numberOfUrls > 0)
 		{
-			done = false;
 			try{
 				
 				sequence =  MakeSequence(test, 5);
-				//System.out.println("Sequence created: " +sequence);
 				Connection.Response response= Jsoup.connect(url+sequence).userAgent("Chrome").execute();
 				int statuscode = response.statusCode(); 
 				
 				if(statuscode == 200){
-				  doc = Jsoup.connect(url+sequence).userAgent("Chrome").get();
-				  done = true;
+					numberOfUrls--;
+					workingUrls.add(url+sequence);
 				}
 				
 			}
 			catch(IOException e){
-			done = false;
 			}
-			
-			if(done == true)
-			{
-				numberOfUrls--;
-				workingUrls.add(url+sequence);
-			}
+		
 			
 		
 		}
@@ -74,7 +66,12 @@ public class Main {
 		          new FileOutputStream("someurls.html"), "utf-8"));
 		    writer.write("<!DOCTYPE html> <html> <body> ");
 		    for(String link : workingUrls){
-		    	writer.write("\n <img src=\""+link+".gif\" height=\"240\" width=\"240\"> ");
+		    	if(censored)
+		    		writer.write("\n <img src=\""+link+".gif\" height=\"240\" width=\"240\" "
+		    				+ "style=\"visibility: hidden;\"> " + link);
+		    	else
+		    		writer.write("\n <img src=\""+link+".gif\" height=\"240\" width=\"240\">");
+		    	
 		    	
 		    }
 		    writer.write("\n</body> </html>");
